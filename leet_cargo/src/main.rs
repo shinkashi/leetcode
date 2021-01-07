@@ -1,5 +1,5 @@
-mod kth_missing_positive_number;
+mod largest_rectangle_in_histogram;
 
 fn main() {
-    kth_missing_positive_number::Solution {};
+    largest_rectangle_in_histogram::Solution {};
 }

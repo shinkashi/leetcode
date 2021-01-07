@@ -1,5 +1,5 @@
-mod largest_rectangle_in_histogram;
+mod length_of_longest_substring;
 
 fn main() {
-    largest_rectangle_in_histogram::Solution {};
+    length_of_longest_substring::Solution {};
 }

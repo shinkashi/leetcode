@@ -1,5 +1,5 @@
-mod length_of_longest_substring;
+mod add_two_numbers;
 
 fn main() {
-    length_of_longest_substring::Solution {};
+    add_two_numbers::Solution {};
 }

@@ -1,4 +1,4 @@
-import { assertEquals } from "https://deno.land/std@0.69.0/testing/asserts.ts";
+import { assertEquals, _format } from "https://deno.land/std@0.69.0/testing/asserts.ts";
 
 /**
  * @param {string} s
@@ -10,7 +10,6 @@ var longestPalindrome = function (s) {
     const S = Array.from(s)
 
     const check = (left, right) => {
-        // case: xxxaxxx 
         while (0 <= left && right < S.length) {
             if (S[left] === S[right]) {
                 left--;
@@ -19,22 +18,18 @@ var longestPalindrome = function (s) {
         }
         left++;
         right--;
-        // console.log({ left, right })
         const palin = S.slice(left, right + 1)
-        // console.log(palin)
         if (palin.length > longestPalin.length) longestPalin = palin;
     }
 
     for (let i = 0; i < S.length; i++) {
-        // console.log('checking', i)
         check(i, i);
-        check(i, i + 1);
+        if (S[i] === S[i + 1]) check(i, i + 1);
     }
     return longestPalin.join('');
 }
 
-Deno.test('test', () => {
-    assertEquals(longestPalindrome('babad'), 'bab')
-    assertEquals(longestPalindrome('cbbd'), 'bb')
-    assertEquals(longestPalindrome('ac'), 'a')
-})
+Deno.test('test', () => { assertEquals(longestPalindrome('babad'), 'bab') });
+Deno.test('test', () => { assertEquals(longestPalindrome('cbbd'), 'bb') });
+Deno.test('test', () => { assertEquals(longestPalindrome('ac'), 'a') });
+

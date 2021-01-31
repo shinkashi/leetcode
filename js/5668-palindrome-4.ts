@@ -32,7 +32,7 @@ Deno.test("A", () => {
 
 
 Deno.test("A", () => {
-    const s = "bcbddxyx"
+    const s = "bcbddxyz"
     const Output = false
     assertEquals(checkPartitioning(s), Output);
 })

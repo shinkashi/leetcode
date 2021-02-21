@@ -5,41 +5,44 @@ function highestPeak(isWater: number[][]): number[][] {
     const n = isWater[0].length;
     const height: number[][] = Array(m);
 
-    let ix = 0, iy = 0;
+    let q: [number, number][] = [];
+    let q2: [number, number][] = [];
+
     for (let y = 0; y < m; y++) {
         height[y] = Array(n);
         for (let x = 0; x < n; x++) {
             if (isWater[y][x] == 1) {
                 height[y][x] = 0;
-                iy = y;
-                ix = x;
+                q.push([y, x]);
             } else {
                 height[y][x] = -1;  // unknown
             }
         }
     }
 
-    const q: number[][] = [[iy, ix, 0]];
-
-
+    let h = 1;
     while (q.length) {
-        const [y, x, h] = q.pop()!;
-        console.log({ y, x, h })
-        height[y][x] = h;
-        let dy, dx: number;
-        for ([dy, dx] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
-            dy += y;
-            dx += x;
-            if (dy < 0 || dy >= m) continue;
-            if (dx < 0 || dx >= n) continue;
-            if (height[dy][dx] !== -1 &&
-                Math.abs(height[dy][dx] - h) > 1) continue;
-            q.push([dy, dx, h + 1]);
-            q.push([dy, dx, h]);
-            if (h >= 2) q.push([dy, dx, h - 1]);
+        q2 = [];
+        while (q.length) {
+            const [y, x] = q.pop()!;
+            // console.log({ y, x })
+            let dy, dx: number;
+            let v = height[y][x];
+            for ([dy, dx] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+                dy += y;
+                dx += x;
+                if (dy < 0 || dy >= m) continue;
+                if (dx < 0 || dx >= n) continue;
+                if (height[dy][dx] == -1) {
+                    height[dy][dx] = h;
+                    q2.push([dy, dx]);
+                }
+            }
         }
-        height[y][x] = -1;
+        q = q2;
+        h++;
     }
+
     return height;
 };
 

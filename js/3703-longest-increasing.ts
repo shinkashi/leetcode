@@ -2,79 +2,34 @@ import { assertEquals } from "https://deno.land/std/testing/asserts.ts";
 
 function longestIncreasingPath(matrix: number[][]): number {
     const dir = [0, 1, 0, -1, 0];
-    const size = matrix.length * matrix[0].length;
-    const adj: number[][] = Array.from({ length: size }, x => []);
-    const hash = (y: number, x: number) => y * matrix[0].length + x;
     let maxStep = 1;
 
-    // create adjacent list
+    const visited = Array.from({ length: matrix.length },
+        x => Array(matrix[0].length).fill(0))
+
+    const dfs = (y: number, x: number): number => {
+        if (visited[y][x]) return visited[y][x];
+        let dist = 1;
+        for (let i = 0; i < dir.length - 1; i++) {
+            let [dy, dx] = [dir[i], dir[i + 1]];
+            dx += x;
+            dy += y;
+            if (dx < 0 || dx >= matrix[0].length) continue;
+            if (dy < 0 || dy >= matrix.length) continue;
+            if (matrix[dy][dx] <= matrix[y][x]) continue;
+            dist = Math.max(dist, dfs(dy, dx) + 1);
+        }
+        visited[y][x] = dist;
+        return dist;
+    }
+
     for (let y = 0; y < matrix.length; y++) {
         for (let x = 0; x < matrix[0].length; x++) {
-            const val = matrix[y][x];
-            const u = hash(y, x);
-            for (let i = 0; i < dir.length - 1; i++) {
-                let [dy, dx] = [dir[i], dir[i + 1]];
-                dx += x;
-                dy += y;
-                if (dx < 0 || dx >= matrix[0].length) continue;
-                if (dy < 0 || dy >= matrix.length) continue;
-                if (matrix[dy][dx] <= val) continue;
-                const v = hash(dy, dx);
-                adj[u].push(v);
+            if (visited[y][x] == 0) {
+                maxStep = Math.max(maxStep, dfs(y, x));
             }
         }
     }
-
-    // // Find diameter leaf
-    // const farthest = (u: number): number => {
-    //     let farthestNode: number;
-    //     let farthestDist = 0;
-    //     const dfs = (u: number, c: number) => {
-    //         if (farthestDist < c) {
-    //             farthestDist = c;
-    //             farthestNode = u;
-    //         }
-    //         for (const v of adj.get(u) || []) {
-    //             dfs(v, c + 1);
-    //         }
-    //     }
-    //     dfs(u, 0);
-    //     return farthestNode!;
-    // }
-
-    // const start = farthest(farthest(0));
-
-    // Bellman-Ford
-    const bellmanFord = (start: number) => {
-        let negativeCycle = false;
-        const dist = Array(size + 1).fill(Infinity);
-        dist[start] = -1; // start node
-        const cost = -1;
-
-        for (let iter = 1; iter <= size; iter++) {
-            let updated = false;
-            for (let u = 0; u < size; u++) {
-                if (dist[u] === Infinity) continue;
-                for (const v of adj[u]) {
-                    if (dist[v] > dist[u] + cost) {
-                        dist[v] = dist[u] + cost;
-                        maxStep = Math.max(maxStep, -dist[v])
-                        updated = true;
-                    }
-                }
-            }
-            // if there is no update we already got the shorted path
-            if (!updated) break;
-
-            // if there is an update in N-th iteration, we have a negative cycle
-            if (iter == size - 1 && updated) negativeCycle = true;
-        }
-    }
-
-    for (let i = 0; i < size; i++) {
-        bellmanFord(i);
-    }
-
     return maxStep;
 }
 

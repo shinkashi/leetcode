@@ -79,25 +79,16 @@ function rotate(matrix: number[][]): void {
             const right = depth + w - 1;
             const top = depth;
             const bottom = depth + w - 1;
-            const [x1, y1] = [left + i, top];
-            const [x2, y2] = [right, top + i];
-            const [x3, y3] = [right - i, bottom];
-            const [x4, y4] = [left, bottom - i];
-            [
-                matrix[y2][x2],
-                matrix[y3][x3],
-                matrix[y4][x4],
-                matrix[y1][x1],
-            ] = [
-                    matrix[y1][x1],
-                    matrix[y2][x2],
-                    matrix[y3][x3],
-                    matrix[y4][x4]
-                ];
-
+            const x1 = left + i, y1 = top;
+            const x2 = right, y2 = top + i;
+            const x3 = right - i, y3 = bottom;
+            const x4 = left, y4 = bottom - i;
+            const tmp = matrix[y2][x2];
+            matrix[y2][x2] = matrix[y1][x1];
+            matrix[y1][x1] = matrix[y4][x4];
+            matrix[y4][x4] = matrix[y3][x3];
+            matrix[y3][x3] = tmp;
         }
-
-
     }
     for (let i = 0; i < n / 2; i++) {
         rotateRing(i);
